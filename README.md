@@ -1,12 +1,14 @@
 # Web Dev Starter Kit
 
-A bundle of 8 [Claude Code](https://claude.com/claude-code) skills for shipping web apps fast. Built by [Becky Isjwara](https://beckyisj.com) — a non-engineer who ships weekly.
+A bundle of 14 [Claude Code](https://claude.com/claude-code) skills for shipping web apps fast: 8 for the frontend and launch, 6 for the backend plumbing. Built by [Becky Isjwara](https://beckyisj.com) — a non-engineer who ships weekly.
 
 Go from blank folder to live tool in an afternoon. Each skill is a slash command (`/prelaunch`, `/ship`, etc.) that tells Claude exactly what to do.
 
-**Paired with plain-English backend guides → [beckyisj.com/webdev](https://beckyisj.com/webdev)**
+**Background reading for each backend skill → [beckyisj.com/webdev](https://beckyisj.com/webdev)**
 
 ## What's in the box
+
+### Frontend and launch
 
 | Command | What it does |
 | --- | --- |
@@ -19,17 +21,34 @@ Go from blank folder to live tool in an afternoon. Each skill is a slash command
 | `/ship` | Commit, push, deploy to Vercel, save project memory. One command. |
 | `/chrome-ext` | Scaffold a Manifest V3 Chrome extension from a plain-English description. |
 
+### Backend plumbing
+
+Each of these detects what the project already has, asks only for what's missing, writes the code, tells you exactly which dashboard and DNS steps are yours, then proves it works with a real test (a test email, a `dig`, a `curl`, a Stripe CLI trigger).
+
+| Command | What it does |
+| --- | --- |
+| `/vercel` | First deploy: link the project, push env vars, `vercel --prod`, attach a domain, confirm 200. |
+| `/domain` | Read current DNS, produce the exact records, registrar-specific steps (Cloudflare / Namecheap / GoDaddy / Vercel), verify propagation and SSL. Buying advice if you don't have one. |
+| `/resend` | Transactional email: SDK, env, a send route, domain DNS verification, a real test send. |
+| `/improvmx` | Free inbound forwarding so `hello@yourdomain` reaches your Gmail. Merges SPF with Resend correctly. |
+| `/supabase` | Auth (magic link + callback), Postgres table with Row-Level Security, storage bucket, `@supabase/ssr` clients. Verified with a live query. |
+| `/stripe` | Checkout Session, signature-verified webhook that grants access, customer portal, Stripe CLI local testing, go-live checklist. |
+
 ## The workflow
 
-Chain them together from blank repo to live tool:
+Chain them together from blank repo to live, paid product:
 
 1. `/landing` — generate the marketing page
 2. `/favicon` — brand the browser tab
 3. `/og-image` — social preview image
 4. `/seo` — sitemap, robots, JSON-LD
-5. `/responsive` — test all breakpoints
-6. `/prelaunch` — full audit
-7. `/ship` — deploy
+5. `/supabase` — auth and a database, if the tool needs accounts
+6. `/stripe` — payments, if it charges
+7. `/resend` + `/improvmx` — email out and in
+8. `/responsive` — test all breakpoints
+9. `/prelaunch` — full audit
+10. `/vercel` — first deploy, then `/domain` to point your domain at it
+11. `/ship` — every deploy after that
 
 ## Install
 
@@ -42,7 +61,7 @@ git clone https://github.com/beckyisj/webdev-kit.git
 
 Each subfolder contains a `SKILL.md` that Claude reads when you invoke the command.
 
-**Requirements:** Claude Code. `/favicon` and `/og-image` render with macOS built-ins (`qlmanage`, `sips`); on Linux/Windows swap in ImageMagick or `rsvg-convert`. `/responsive` drives a browser through the Playwright MCP plugin (`/plugin install playwright`) or the Claude in Chrome extension, and falls back to `npx playwright screenshot` if neither is present.
+**Requirements:** Claude Code. The backend skills expect the relevant CLI where one exists (`vercel`, `stripe`, optionally `supabase`) and tell you how to install it. `/favicon` and `/og-image` render with macOS built-ins (`qlmanage`, `sips`); on Linux/Windows swap in ImageMagick or `rsvg-convert`. `/responsive` drives a browser through the Playwright MCP plugin (`/plugin install playwright`) or the Claude in Chrome extension, and falls back to `npx playwright screenshot` if neither is present.
 
 Updating: `cd ~/.claude/skills/webdev-kit && git pull`.
 
@@ -56,7 +75,7 @@ Creators and indie hackers who want to ship tools but don't want to become full-
 
 ## Backend guides
 
-These skills cover the frontend. For the backend plumbing (email, payments, database, domains, deployment), I wrote plain-English guides:
+The six backend skills each have a companion article that explains the *why* and the pricing in plain English. Read these if you want to understand what the skill is doing:
 
 - [Resend](https://beckyisj.com/webdev/guides/resend) — transactional email
 - [Vercel](https://beckyisj.com/webdev/guides/vercel) — deployment

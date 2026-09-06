@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.0 — 2026-09-06
+
+Six new backend skills. The kit now covers the backend the guides used to only describe.
+
+- **`/vercel`** — first deploy: link, env sync, `vercel --prod`, domain attach, verify.
+- **`/domain`** — DNS read, exact records, registrar-specific steps, propagation and SSL check, buying advice.
+- **`/resend`** — transactional email with a scaffolded send route and a real test send to Resend's sink address.
+- **`/improvmx`** — inbound forwarding with correct SPF merging when Resend is also present.
+- **`/supabase`** — `@supabase/ssr` clients, magic-link callback, RLS-on table, storage, live-query verification. Uses the current publishable/secret key names, with the legacy anon/service_role pair noted.
+- **`/stripe`** — Checkout Session, signature-verified webhook (grants access there, never on the redirect), customer portal, Stripe CLI testing, go-live checklist.
+
+Every backend skill follows the same shape: detect, ask only for what's missing, scaffold, hand over the dashboard/DNS steps that need a human, verify with a real request, report.
+
+
 ## 1.1.0 — 2026-09-06
 
 Refresh for current Claude Code. No new skills; every existing one was audited against the September 2026 harness and models.
