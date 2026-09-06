@@ -1,8 +1,8 @@
 ---
 name: responsive
 description: Test a web app at mobile, tablet, and desktop breakpoints. Screenshots each size, flags overflow, small touch targets, tiny text, and viewport issues. Use before shipping or after layout changes.
-user_invocable: true
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, mcp__Claude_Preview__preview_start, mcp__Claude_Preview__preview_list, mcp__Claude_Preview__preview_screenshot, mcp__Claude_Preview__preview_resize, mcp__Claude_Preview__preview_inspect, mcp__Claude_Preview__preview_eval
+user-invocable: true
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_resize, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_snapshot
 argument-hint: [url-or-project-path]
 ---
 
@@ -21,14 +21,24 @@ Test at these three sizes:
 
 ## Process
 
+### 0. Pick a browser tool
+
+This skill needs a way to drive a browser. Use the first one available in the session:
+- **Playwright MCP plugin** (`browser_navigate`, `browser_resize`, `browser_take_screenshot`, `browser_evaluate`) — the tool names below assume this. Install with `/plugin install playwright` if missing.
+- **Claude in Chrome extension** (`mcp__claude-in-chrome__*`) — same steps; use `navigate`, `resize_window`, `computer` screenshot, and `javascript_tool` in place of the Playwright names.
+- **Neither** — fall back to the CLI for screenshots and skip the JS checks:
+  ```bash
+  npx playwright screenshot --viewport-size=375,812 --full-page <url> mobile.png
+  npx playwright screenshot --viewport-size=768,1024 --full-page <url> tablet.png
+  npx playwright screenshot --viewport-size=1280,800 --full-page <url> desktop.png
+  ```
+  Then read the three PNGs and review them visually.
+
 ### 1. Get a running preview
 
-If given a URL, use it directly with `preview_start` (or confirm one is already running with `preview_list`).
+If given a URL, open it with `browser_navigate`.
 
-If given a project path:
-- Check for `.claude/launch.json` — if present, use `preview_start` with the configured name
-- If not, create `.claude/launch.json` first (see preview_start docs) based on `package.json` scripts
-- Start the server and get a URL
+If given a project path, start the dev server from `package.json` scripts in the background, wait for it to listen, then `browser_navigate` to its URL.
 
 ### 2. Pre-flight checks (static analysis)
 
@@ -51,19 +61,13 @@ Note anything suspicious for the browser phase.
 
 For each of mobile / tablet / desktop:
 
-**a. Resize the viewport:**
-```
-preview_resize with preset "mobile" (or "tablet", "desktop")
-```
+**a. Resize the viewport:** `browser_resize` to 375×812, 768×1024, or 1280×800.
 
-**b. Take a screenshot:**
-```
-preview_screenshot to capture the rendered page
-```
+**b. Take a screenshot:** `browser_take_screenshot`.
 
 **c. Check for horizontal overflow:**
 ```javascript
-// Via preview_eval:
+// Via browser_evaluate:
 ({
   docWidth: document.documentElement.scrollWidth,
   viewWidth: window.innerWidth,
@@ -81,7 +85,7 @@ preview_screenshot to capture the rendered page
 
 **d. Check touch target sizes (mobile only):**
 ```javascript
-// Via preview_eval:
+// Via browser_evaluate:
 Array.from(document.querySelectorAll('button, a, input, [role="button"]'))
   .map(el => {
     const r = el.getBoundingClientRect();
@@ -93,7 +97,7 @@ Array.from(document.querySelectorAll('button, a, input, [role="button"]'))
 
 **e. Check for tiny text:**
 ```javascript
-// Via preview_eval:
+// Via browser_evaluate:
 Array.from(document.querySelectorAll('p, span, li, a, button, input'))
   .map(el => {
     const size = parseFloat(getComputedStyle(el).fontSize);
@@ -171,16 +175,12 @@ Format as a scored report:
 3. **Oversized hero image** — use `next/image` or add responsive `srcset`
 ```
 
-### 6. Offer to fix
-
-After the report, ask: "Want me to fix any of these?"
-
 ## Rules
 - Always test all three breakpoints — never skip one
 - Take screenshots at each breakpoint (for visual verification)
 - Don't flag intentional choices (e.g., sticky footer, fixed navbar)
-- Keep reports concise — max 5 items per issue type
+- Lead with the issues that would break the page; fold repeats of the same defect into one item with a count
 - File paths + line numbers for every actionable item
 - Touch target threshold is 44×44px (Apple HIG standard)
 - Text size threshold is 14px for body, can be 12px for labels/badges
-- If server isn't running and no launch.json, ask before creating one
+- If no server is running, ask before starting one

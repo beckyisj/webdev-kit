@@ -1,6 +1,6 @@
 ---
 name: ship
-description: End-to-end ship workflow — commit, push, deploy to Vercel, and save project memory. Runs after a build session to handle all the boring stuff.
+description: End-to-end ship workflow — commit, push, deploy to Vercel, and save a project note. Runs after a build session to handle all the boring stuff.
 argument-hint: [optional commit message]
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Agent
@@ -8,7 +8,7 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Agent
 
 # Ship It
 
-Post-build skill that handles commit → push → deploy → memory in one shot. No more asking for each step.
+Post-build skill that handles commit → push → deploy → notes in one shot. No more asking for each step.
 
 ## When to use
 
@@ -30,7 +30,7 @@ If there are no changes, say so and stop.
 - Stage relevant files (NOT node_modules, .env, .DS_Store, credentials)
 - If the user provided a commit message in the argument, use it
 - If not, write a concise commit message based on the diff (1-2 sentences, focus on "why")
-- Append `Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>`
+- Append the commit attribution trailer the harness supplies (do not hardcode a model name)
 - Commit. If pre-commit hook fails, fix and retry.
 
 ### Step 3: Push
@@ -52,29 +52,16 @@ If yes:
 
 If no Vercel config exists, skip this step and mention it.
 
-### Step 5: Save project memory
+### Step 5: Save a project note
 
-Check if a memory file already exists for this project:
-```bash
-ls ~/.claude/projects/-Users-beckyisjwara/memory/*<project-name>*.md 2>/dev/null
-```
+Keep a short record so the next session (yours or Claude's) knows what shipped. Use whichever the project already has, in this order:
+- Claude Code auto-memory, if it is enabled in this session (the harness tells you the memory directory): update or create a `project_<name>.md` entry
+- Otherwise `CLAUDE.md` in the project root: add or update a "Deployed" line with the URL and date
+- Otherwise a `SHIPLOG.md` in the project root: append one line — date, commit hash, one-sentence summary, deploy URL
 
-- If exists: update it with what changed in this session
-- If new project: create a memory file with:
-  - Project name and directory
-  - What it does (1-2 sentences)
-  - Tech stack
-  - Deploy URL (if Vercel)
-  - Date shipped
-- Update MEMORY.md index if a new memory file was created
+Record: what the project does (1-2 sentences), tech stack, deploy URL, date shipped.
 
-### Step 6: Check if it's a youtubeproducer.app tool
-
-If the project deploys to a `*.youtubeproducer.app` subdomain:
-- Verify the subdomain is listed in the MEMORY.md "YouTube Producer Tools" section
-- If not, add it
-
-### Step 7: Summary
+### Step 6: Summary
 
 Report:
 ```
@@ -82,7 +69,7 @@ Shipped:
 - Commit: <hash> — <message>
 - Push: <branch> → origin
 - Deploy: <url> (or "skipped — no Vercel config")
-- Memory: <created/updated> <filename>
+- Note: <created/updated> <filename>
 ```
 
 ## Important

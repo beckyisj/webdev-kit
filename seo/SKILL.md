@@ -1,7 +1,7 @@
 ---
 name: seo
 description: Audit and bootstrap SEO for a web project — sitemap.xml, robots.txt, llms.txt, JSON-LD structured data, and meta tags. Use when launching a site or adding SEO to an existing one.
-user_invocable: true
+user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 argument-hint: [project-path]
 ---
@@ -35,7 +35,7 @@ cat package.json | grep -E "(next|vite|astro)" 2>/dev/null
 
 ### 2. Ask for essentials (if missing)
 
-- **Canonical domain** (e.g., `https://youtubeproducer.app`)
+- **Canonical domain** (e.g., `https://mytool.app`)
 - **Site name** and **tagline**
 - **Description** (160 char max for meta description)
 - **Content type**: marketing site, blog, web app, article, or tool?
@@ -101,7 +101,10 @@ Allow: /
 User-agent: GPTBot
 Allow: /
 
-User-agent: Claude-Web
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
 Allow: /
 
 User-agent: PerplexityBot
@@ -125,7 +128,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       { userAgent: '*', allow: '/', disallow: ['/api/'] },
       { userAgent: 'GPTBot', allow: '/' },
-      { userAgent: 'Claude-Web', allow: '/' },
+      { userAgent: 'ClaudeBot', allow: '/' },
+      { userAgent: 'Claude-SearchBot', allow: '/' },
       { userAgent: 'PerplexityBot', allow: '/' },
     ],
     sitemap: 'https://[domain]/sitemap.xml',
@@ -182,7 +186,7 @@ Choose the schema based on content type:
   "url": "https://[domain]",
   "logo": "https://[domain]/logo.png",
   "sameAs": [
-    "https://twitter.com/[handle]",
+    "https://x.com/[handle]",
     "https://linkedin.com/in/[handle]"
   ]
 }
@@ -335,12 +339,11 @@ After deploying, verify with:
 - Google Rich Results Test: https://search.google.com/test/rich-results
 - Facebook Sharing Debugger: https://developers.facebook.com/tools/debug/
 - LinkedIn Post Inspector: https://www.linkedin.com/post-inspector/
-- Twitter Card Validator: https://cards-dev.twitter.com/validator
 
 ## Rules
 - Never invent content — if description, tagline, or features are missing, ask
 - Always use absolute URLs in sitemap and JSON-LD (not relative paths)
-- Explicitly allow AI crawlers (GPTBot, Claude-Web, PerplexityBot) — this is Becky's default
+- Explicitly allow AI crawlers (GPTBot, ClaudeBot, Claude-SearchBot, PerplexityBot) — AI search is now a real traffic source, so opt in unless the user says otherwise
 - For blogs/articles, use the @graph array to combine Article + BreadcrumbList
 - Don't add JSON-LD for content that doesn't exist yet (e.g., don't add Article schema to a homepage)
 - Match framework patterns: don't add `public/sitemap.xml` to a Next.js project, use `src/app/sitemap.ts`

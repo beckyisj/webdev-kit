@@ -42,6 +42,10 @@ git clone https://github.com/beckyisj/webdev-kit.git
 
 Each subfolder contains a `SKILL.md` that Claude reads when you invoke the command.
 
+**Requirements:** Claude Code. `/favicon` and `/og-image` render with macOS built-ins (`qlmanage`, `sips`); on Linux/Windows swap in ImageMagick or `rsvg-convert`. `/responsive` drives a browser through the Playwright MCP plugin (`/plugin install playwright`) or the Claude in Chrome extension, and falls back to `npx playwright screenshot` if neither is present.
+
+Updating: `cd ~/.claude/skills/webdev-kit && git pull`.
+
 Type `/prelaunch` (or any other skill) in your Claude Code session. Claude reads the SKILL.md and knows exactly what to do.
 
 ## Who this is for

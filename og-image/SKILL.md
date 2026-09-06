@@ -17,7 +17,6 @@ Generate a branded OG/social preview image for any website or tool.
 **OG images appear tiny** — WhatsApp, Slack, iMessage, and Twitter show them as small thumbnails. Design for readability at thumbnail size:
 
 - **Fill the frame**: Use minimal padding. Content should occupy 70-80% of the canvas, not float in whitespace.
-- **Large text**: Title text should be at least 60-80px in the 1200x1200 canvas. Subtitles at least 28-34px.
 - **Bold contrast**: Text must be clearly readable against the background at small sizes.
 - **Few elements**: Logo + title + one subtitle + domain. No small pills or fine details that disappear at thumbnail size.
 - **Test mentally**: Imagine the image at 300x157px — can you still read the title?
@@ -25,9 +24,7 @@ Generate a branded OG/social preview image for any website or tool.
 ## Steps
 
 ### 1. Check for existing brand assets
-Look for existing logos, color schemes, or SVGs in the project to match the brand.
-
-For YouTube Producer tools specifically, read the master template at `~/Cursor/youtube-producer/youtubeproducer-app/og-image.svg`.
+Look for existing logos, color schemes, or SVGs in the project to match the brand. If the project has an existing `og-image.svg` from a sibling tool, use it as the master template so the family stays consistent.
 
 ### 2. Create the SVG
 Create a new SVG at the target project's `public/og-image.svg` (or project root if no `public/` dir).
@@ -49,11 +46,11 @@ Create a new SVG at the target project's `public/og-image.svg` (or project root 
 - All text: `text-anchor="middle"` at `x="600"`
 - CJK text: Use `'PingFang HK', 'Noto Sans TC'` as primary font-family
 
-**YouTube Producer tools specifically:**
-- Background: stone gradient (`#fafaf9` → `#f0efed`, diagonal)
-- Accent: teal gradient bar at y=285
-- Teal glow ellipse, teal-outlined pills
-- Domain: `youtubeproducer.app`
+**A layout that works well when you have no brand yet:**
+- Background: soft neutral gradient (e.g. `#fafaf9` → `#f0efed`, diagonal)
+- Accent: a thin brand-color bar along the top edge of the crop zone (y=285)
+- One soft accent-color glow ellipse behind the title
+- Domain in the accent color at the bottom of the content zone
 
 ### 3. Render to PNG
 Run these commands from the project directory:
@@ -87,7 +84,7 @@ After deploying, remind the user to purge OG caches:
 - Twitter Card Validator
 
 ## Rules
-- NEVER use PIL/Pillow bitmap generation — SVG + qlmanage/sips only
-- Content MUST be centered in the y=285–915 crop zone
-- **SIZE UP**: When in doubt, make elements bigger. Whitespace is the enemy of OG images.
+- SVG + qlmanage/sips only (PIL rasterizes text badly)
+- Keep content inside the y=285–915 crop zone
+- Prefer larger elements; whitespace reads as empty at thumbnail size
 - Verify text symbols ($, S, etc.) aren't mirrored in hand-drawn SVG paths

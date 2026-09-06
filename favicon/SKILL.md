@@ -1,7 +1,7 @@
 ---
 name: favicon
 description: Generate a complete favicon set (favicon.ico, favicon.svg, apple-touch-icon.png) from a concept or existing SVG. Use when adding a favicon to a website or refreshing an existing one.
-user_invocable: true
+user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Glob
 argument-hint: [project-path-or-concept]
 ---
@@ -10,7 +10,7 @@ argument-hint: [project-path-or-concept]
 
 Generate a complete multi-format favicon set for a website.
 
-**Argument**: `$ARGUMENTS` is either a project path (e.g., `~/Cursor/youtube-producer/youtubeproducer-app`) or a concept (e.g., "blue B on white background"). If not provided, ask.
+**Argument**: `$ARGUMENTS` is either a project path (e.g., `~/projects/my-app`) or a concept (e.g., "blue B on white background"). If not provided, ask.
 
 ## Output files
 
@@ -31,7 +31,7 @@ Look for existing logos, colors, or SVGs in the project:
 - `tailwind.config.*` for brand colors
 - README or CLAUDE.md for design system notes
 
-If the project has a brand (e.g., YouTube Producer uses teal #0d9488 + Manrope), match it.
+If the project has a brand (an accent color, a display font), match it. The template below uses teal `#0d9488` as a placeholder.
 
 ### 2. Design the SVG
 
@@ -159,11 +159,3 @@ Favicons are aggressively cached by browsers. After deploying:
 - Hard refresh: Cmd+Shift+R
 - Chrome: Check `chrome://favicon/` to force reload
 - Mention this to the user
-
-## Rules
-- Always generate all formats (svg + ico + apple-touch + 192 + 512)
-- Use qlmanage + sips — never PIL/Pillow for rasterization
-- Match existing brand colors if the project has them; don't invent new ones
-- Single focal element — resist the urge to combine letter + icon + text
-- Verify the 32px render looks good, not just the 2400px render
-- If the project uses Next.js App Router, place files in `src/app/` (not `public/`) so Next.js handles the metadata automatically

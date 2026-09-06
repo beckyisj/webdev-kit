@@ -1,7 +1,7 @@
 ---
 name: landing
 description: Generate a responsive tool landing page (hero, demo, features, CTA, footer) from a tool name and description. Use when launching a new tool or building a marketing page.
-user_invocable: true
+user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Glob
 argument-hint: [tool-name-and-description]
 ---
@@ -382,9 +382,5 @@ If the project is Next.js App Router, adapt:
 - **Rounded corners consistent** — use the --radius token everywhere
 
 ## Rules
-- Always include viewport meta, OG tags, and canonical URL
-- Use semantic HTML (nav, section, footer — not divs with classes)
-- All interactive elements must have a visible hover state
-- Test mentally at 375px (mobile) — hero should not overflow
-- Don't use Lorem ipsum — fill real content from the user's description
-- Don't add tracking scripts, chat widgets, or analytics without being asked
+- Don't add tracking scripts, chat widgets, or analytics unless asked
+- Check the hero at 375px wide before finishing

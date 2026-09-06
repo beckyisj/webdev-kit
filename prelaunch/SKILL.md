@@ -1,7 +1,7 @@
 ---
 name: prelaunch
 description: Pre-launch review for web apps. Code-level audit covering accessibility, responsive design, SEO, error states, performance, and common issues. Run before deploying.
-user_invocable: true
+user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent
 argument-hint: [project-path-or-name]
 ---
@@ -10,7 +10,7 @@ argument-hint: [project-path-or-name]
 
 Run a comprehensive code-level audit on a web app before it goes live.
 
-**Argument**: `$ARGUMENTS` is the project path or name (e.g., `~/Cursor/youtube-producer/youtubeproducer-app`). If not provided, ask.
+**Argument**: `$ARGUMENTS` is the project path or name (e.g., `~/projects/my-app`). If not provided, ask.
 
 ## Process
 
@@ -78,7 +78,7 @@ Scan all page/component files and check each category. Use Glob and Grep to find
 - Missing font `display: swap` for custom fonts
 - Render-blocking resources
 
-#### G. Interface Polish (jakub.kr principles)
+#### G. Interface Polish
 - Missing `text-wrap: balance` on headings (prevents orphaned words)
 - Nested elements with mismatched border radius (outer should = inner + padding)
 - Missing `-webkit-font-smoothing: antialiased` on body/layout
@@ -128,13 +128,10 @@ Present results as a scored checklist. Group by category.
 - **Warning ⚠** = Minor issues that won't block launch but should be fixed
 - **Fail ✗** = Issues that should be fixed before going live
 
-### 5. Offer to fix
-After presenting the audit, ask: "Want me to fix any of these?"
-
 ## Rules
 - Be specific: always include file paths and line numbers
 - Don't flag framework-handled things (e.g., Next.js handles viewport meta automatically)
 - Don't flag things that are clearly intentional design choices
-- Keep the audit focused — max 5-6 items per category, prioritize the most impactful
+- Lead with the issues that would block launch; fold repeats of the same defect into one item with a count
 - If screenshots are provided, review them visually too (mobile readability, visual bugs, layout issues)
 - Stack-aware: adjust checks based on the framework (Next.js, Vite, Astro, etc.)

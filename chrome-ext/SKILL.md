@@ -1,7 +1,7 @@
 ---
 name: chrome-ext
 description: Scaffold a Chrome extension from a description. Generates manifest v3, content scripts, popup, and styles with minimal permissions. Use when building a new browser extension.
-user_invocable: true
+user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Glob
 argument-hint: [extension-description]
 ---
@@ -24,7 +24,7 @@ Determine from the description:
 
 ### 2. Choose the output directory
 
-Ask the user where to create it, suggesting `~/Cursor/chrome-extensions/[Extension Name]/`.
+Ask the user where to create it. Suggest a dedicated `chrome-extensions/[Extension Name]/` folder alongside their other projects.
 
 ### 3. Generate the extension
 
@@ -225,10 +225,5 @@ After generating, tell the user:
 5. Test on a relevant page
 
 ## Rules
-- Always use Manifest V3 (never V2)
-- Minimize permissions — `activeTab` is enough for most extensions
-- Use `web_accessible_resources` only when content scripts need to load extension assets (icons, fonts)
-- For SPA sites (YouTube, GitHub, Twitter), always include a MutationObserver for navigation changes
-- Inline styles for positioning/z-index, external CSS for polish
-- IIFE wrapper on content scripts to avoid global scope pollution
-- The extension should work immediately after loading — no build step required
+- Minimal permissions: `activeTab` unless the description needs more
+- Must load and work via "Load unpacked" with no build step
