@@ -2,7 +2,7 @@
 
 ## 2.1.0 — 2026-11-27
 
-One new skill, from a real AEO pass on a live product (AI search went from naming it in 1 of 20 buyer prompts, with fixes shipped the same day).
+One new skill, built from a real AEO pass on a live product whose baseline was 1 of 20 buyer prompts.
 
 - **`/aeo`** — answer-engine optimisation as a measurement loop: write buyer prompts, take a baseline, diagnose each miss with a no-JavaScript fetch, fix the site (prerender a Vite SPA landing page, visible FAQ + FAQPage from one data file, SoftwareApplication with every plan's price, one static page per job, an honest /compare page), write paste-ready directory listings, retest the same prompts about 4 weeks later.
 - **`/seo`**: robots.txt now allows the live-fetch assistant agents (`ChatGPT-User`, `Claude-User`, `Perplexity-User`) plus `OAI-SearchBot`, `Google-Extended` and `Applebot-Extended`; flags client-rendered SPAs that serve crawlers an empty `#root`; adds a FAQPage template and pricing/"vs X" sections to llms.txt; reminds you to submit to Bing Webmaster Tools as well as Search Console.
