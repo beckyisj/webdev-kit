@@ -31,7 +31,12 @@ grep -rl "application/ld+json" . 2>/dev/null
 
 # Check framework
 cat package.json | grep -E "(next|vite|astro)" 2>/dev/null
+
+# What a crawler sees without JavaScript (run against the live URL if deployed)
+curl -sL https://[domain]/ | sed 's/<script.*<\/script>//g; s/<[^>]*>/ /g' | wc -w
 ```
+
+**If that word count is tiny (under ~100) on a client-rendered SPA** (Vite + React, CRA), crawlers and AI fetchers see an empty `#root`. Sitemaps and meta tags won't help much until the landing page is prerendered. Flag it at the top of the report and point to `/aeo`, which walks through prerendering a Vite landing page at build time.
 
 ### 2. Ask for essentials (if missing)
 
@@ -96,25 +101,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
 ```
 User-agent: *
 Allow: /
+Disallow: /api/
 
-# AI crawlers
+# AI search + assistant crawlers. The *-User agents fetch pages live
+# when someone asks an assistant about you, so blocking them hides you.
 User-agent: GPTBot
-Allow: /
-
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
 User-agent: ClaudeBot
-Allow: /
-
 User-agent: Claude-SearchBot
-Allow: /
-
+User-agent: Claude-User
 User-agent: PerplexityBot
-Allow: /
-
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
 User-agent: Amazonbot
 Allow: /
-
-User-agent: CCBot
-Allow: /
+Disallow: /api/
 
 Sitemap: https://[domain]/sitemap.xml
 ```
@@ -127,10 +130,16 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       { userAgent: '*', allow: '/', disallow: ['/api/'] },
-      { userAgent: 'GPTBot', allow: '/' },
-      { userAgent: 'ClaudeBot', allow: '/' },
-      { userAgent: 'Claude-SearchBot', allow: '/' },
-      { userAgent: 'PerplexityBot', allow: '/' },
+      {
+        userAgent: [
+          'GPTBot', 'OAI-SearchBot', 'ChatGPT-User',
+          'ClaudeBot', 'Claude-SearchBot', 'Claude-User',
+          'PerplexityBot', 'Perplexity-User',
+          'Google-Extended', 'Applebot-Extended', 'Amazonbot',
+        ],
+        allow: '/',
+        disallow: ['/api/'],
+      },
     ],
     sitemap: 'https://[domain]/sitemap.xml',
   };
@@ -149,6 +158,14 @@ Create `public/llms.txt` (or root for Next.js):
 ## What is [Site Name]?
 
 [2-3 sentence description — what it does, who it's for]
+
+## Pricing
+
+[Free tier and its limits, paid price. Assistants won't recommend what they can't price.]
+
+## How it differs from [main alternative]
+
+[One honest sentence]
 
 ## Key features
 
@@ -212,6 +229,26 @@ Choose the schema based on content type:
 }
 </script>
 ```
+
+Include an `Offer` for **every** plan (free and paid, with real prices) and a `featureList`. A single `"price": "0"` on a paid product is wrong, and assistants repeat it.
+
+**FAQPage** (any page with a visible FAQ):
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "[Question exactly as shown on the page]",
+      "acceptedAnswer": { "@type": "Answer", "text": "[Answer exactly as shown]" }
+    }
+  ]
+}
+</script>
+```
+Only add it where the questions are visible on the page. Keep the FAQ in one data file and render both the section and the schema from it, so they can't drift apart.
 
 **Article** (blog posts):
 ```html
@@ -335,7 +372,7 @@ Format as a checklist:
 
 ### 5. Remind about verification
 
-After deploying, verify with:
+After deploying, submit the sitemap in Google Search Console and Bing Webmaster Tools (Bing's index feeds several AI assistants), then verify with:
 - Google Rich Results Test: https://search.google.com/test/rich-results
 - Facebook Sharing Debugger: https://developers.facebook.com/tools/debug/
 - LinkedIn Post Inspector: https://www.linkedin.com/post-inspector/
@@ -343,7 +380,8 @@ After deploying, verify with:
 ## Rules
 - Never invent content — if description, tagline, or features are missing, ask
 - Always use absolute URLs in sitemap and JSON-LD (not relative paths)
-- Explicitly allow AI crawlers (GPTBot, ClaudeBot, Claude-SearchBot, PerplexityBot) — AI search is now a real traffic source, so opt in unless the user says otherwise
+- Explicitly allow AI crawlers, including the live-fetch `*-User` agents. AI search is now a real traffic source, so opt in unless the user says otherwise
+- `/seo` makes the site crawlable; it doesn't check whether AI assistants actually recommend it. For that, run `/aeo`, which measures buyer prompts before and after
 - For blogs/articles, use the @graph array to combine Article + BreadcrumbList
 - Don't add JSON-LD for content that doesn't exist yet (e.g., don't add Article schema to a homepage)
 - Match framework patterns: don't add `public/sitemap.xml` to a Next.js project, use `src/app/sitemap.ts`

@@ -1,6 +1,6 @@
 # Web Dev Starter Kit
 
-A bundle of 14 [Claude Code](https://claude.com/claude-code) skills for shipping web apps fast: 8 for the frontend and launch, 6 for the backend plumbing. Built by [Becky Isjwara](https://beckyisj.com) — a non-engineer who ships weekly.
+A bundle of 15 [Claude Code](https://claude.com/claude-code) skills for shipping web apps fast: 9 for the frontend, launch and getting found, 6 for the backend plumbing. Built by [Becky Isjwara](https://beckyisj.com) — a non-engineer who ships weekly.
 
 Go from blank folder to live tool in an afternoon. Each skill is a slash command (`/prelaunch`, `/ship`, etc.) that tells Claude exactly what to do.
 
@@ -8,7 +8,7 @@ Go from blank folder to live tool in an afternoon. Each skill is a slash command
 
 ## What's in the box
 
-### Frontend and launch
+### Frontend, launch and getting found
 
 | Command | What it does |
 | --- | --- |
@@ -20,6 +20,7 @@ Go from blank folder to live tool in an afternoon. Each skill is a slash command
 | `/prelaunch` | 8-category code audit: a11y, responsive, SEO, error states, performance, security. |
 | `/ship` | Commit, push, deploy to Vercel, save project memory. One command. |
 | `/chrome-ext` | Scaffold a Manifest V3 Chrome extension from a plain-English description. |
+| `/aeo` | Get recommended by ChatGPT, Perplexity, Claude and Google AI. Baselines 15–25 buyer prompts, diagnoses each miss (empty SPA, no FAQ, no pricing, no listings), fixes the site, writes your directory listings, then retests the same prompts. |
 
 ### Backend plumbing
 
@@ -49,6 +50,7 @@ Chain them together from blank repo to live, paid product:
 9. `/prelaunch` — full audit
 10. `/vercel` — first deploy, then `/domain` to point your domain at it
 11. `/ship` — every deploy after that
+12. `/aeo` — once it's live, so AI search actually recommends it
 
 ## Install
 
